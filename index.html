@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="UTF-8">
+		<title>REAR: Retrieve, Expand and Refine</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#157879">
+		<link rel="stylesheet" href="css/normalize.css">
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="css/cayman.css">
+	</head>
+	<body>
+		<section class="page-header">
+			<h1>REAR</h1>
+			<h2 style="color: white; font-weight: 300; margin-top: -10px;">Retrieve, Expand and Refine for Effective Multitable Retrieval</h2>
+			<a href="https://arxiv.org/abs/2511.00805" class="btn" target="_blank" rel="noopener noreferrer">Paper</a>
+			<a href="https://github.com/CoRAL-ASU/REaR" class="btn">Code</a>
+			<!-- <a href="#demo" class="btn">Demo</a> -->
+		</section>
+		<section class="main-content">
+			<h1>REAR: Retrieve, Expand and Refine for Effective Multitable Retrieval</h1>
+			
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>About</h2>
+			<p style="text-align: justify;">Answering natural language queries over relational data often requires retrieving and reasoning over multiple tables, yet most retrievers optimize only for query–table relevance and ignore table–table compatibility. We introduce REAR (Retrieve, Expand and Refine), a three-stage, LLM-free framework that separates semantic relevance from structural joinability for efficient, high-fidelity multi-table retrieval. REAR (i) retrieves query-aligned tables, (ii) expands these with structurally joinable tables via fast, precomputed column-embedding comparisons, and (iii) refines them by pruning noisy or weakly related candidates.</p>
+			
+			<p style="text-align: justify;"><strong>TL;DR:</strong> REAR is a three-stage retrieval framework that jointly optimizes query–table relevance and table–table joinability without online LLM calls, achieving performance competitive with state-of-the-art LLM-augmented systems while maintaining significantly lower latency and cost.</p>
+
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Framework Overview</h2>
+			<p style="text-align: justify;">REAR comprises three stages that cleanly separate different aspects of multi-table retrieval:</p>
+			<p style="margin-left:5%; margin-right:5%;"><img src="figures/arch_diagram.png" style="max-width:100%;" alt="REAR Framework Overview"></p>
+			<ul style="text-align: justify;">
+				<li><strong>Stage 1 - Retrieve:</strong> Select top-k relevant tables using standard dense, sparse, or hybrid retrievers to ensure query-table relevance.</li>
+				<li><strong>Stage 2 - Expand:</strong> Augment with structurally joinable tables using FAISS column search and cross-encoder reranking, expanding from k to k'+∆k' candidates.</li>
+				<li><strong>Stage 3 - Refine:</strong> Score candidates by both query relevance and table joinability, reranking to final top-k tables.</li>
+			</ul>
+
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key Features</h2>
+			<ul style="text-align: justify;">
+				<li><strong>LLM-Free Design:</strong> Eliminates online LLM calls, achieving 92.24% token reduction compared to ARM</li>
+				<li><strong>Retriever-Agnostic:</strong> Works as a plug-and-play layer over any standard retriever (dense, sparse, or hybrid)</li>
+				<li><strong>Joint Optimization:</strong> Explicitly models both query–table relevance and table–table joinability</li>
+				<li><strong>Efficient Expansion:</strong> Uses precomputed column embeddings with FAISS for sublinear-time joinability detection</li>
+				<li><strong>Precision-Focused Refinement:</strong> Prunes noisy candidates while maintaining high recall</li>
+			</ul>
+
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Methodology</h2>
+			
+			<h3>1. Retrieval Stage</h3>
+			<p style="text-align: justify;">The retrieval stage identifies base tables semantically relevant to the query using standard retrievers:</p>
+			<ul>
+				<li><strong>Sparse retrievers:</strong> TF-IDF based scoring (BM25, SPLADE)</li>
+				<li><strong>Dense retrievers:</strong> Cosine similarity between learned embeddings (UAE, GTE, e5-mistral, BGE)</li>
+				<li><strong>Hybrid retrievers:</strong> Weighted combination of sparse and dense scores</li>
+			</ul>
+
+			<h3>2. Expansion Stage</h3>
+			<p style="text-align: justify;">The expansion stage adds tables that are structurally joinable with the base set through:</p>
+			<ul>
+				<li><strong>Detection:</strong> Identify joinable tables by measuring column embedding similarity using approximate nearest neighbor search</li>
+				<li><strong>Reranking:</strong> Filter semantically distant tables using cross-encoder reranking to ensure both joinability and query relevance</li>
+			</ul>
+
+			<h3>3. Refinement Stage</h3>
+			<p style="text-align: justify;">The refinement stage jointly scores candidates using:</p>
+			<ul>
+				<li><strong>Query-table relevance:</strong> Cross-encoder similarity between query and table</li>
+				<li><strong>Table-table joinability:</strong> Attention-weighted score based on column-level similarities</li>
+			</ul>
+
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Experimental Results</h2>
+			
+			<h3>Retrieval Performance</h3>
+			<p style="text-align: justify;">REAR consistently improves retrieval metrics across all datasets and retriever types. Below shows results with UAE dense retriever:</p>
+			<div style="overflow-x:auto;">
+				<table style="margin-left:auto; margin-right:auto; border-collapse: collapse;">
+					<thead>
+						<tr>
+							<th style="border: 1px solid #ddd; padding: 8px;">Dataset</th>
+							<th style="border: 1px solid #ddd; padding: 8px;">Method</th>
+							<th style="border: 1px solid #ddd; padding: 8px;">Recall</th>
+							<th style="border: 1px solid #ddd; padding: 8px;">Precision</th>
+							<th style="border: 1px solid #ddd; padding: 8px;">Full Recall</th>
+						</tr>
+					</thead>
+					<tbody align="center">
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;" rowspan="3">BIRD</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">Retrieval (Top 5)</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">90.68</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">36.09</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">82.79</td>
+						</tr>
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;">+Expansion</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">96.81</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">25.26</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">93.42</td>
+						</tr>
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>REAR (Full)</strong></td>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>93.96</strong></td>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>36.33</strong></td>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>87.29</strong></td>
+						</tr>
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;" rowspan="3">MMQA</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">Retrieval (Top 5)</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">73.92</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">32.61</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">52.27</td>
+						</tr>
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;">+Expansion</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">87.91</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">24.44</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">75.64</td>
+						</tr>
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>REAR (Full)</strong></td>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>83.19</strong></td>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>36.86</strong></td>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>66.61</strong></td>
+						</tr>
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;" rowspan="3">Spider</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">Retrieval (Top 5)</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">98.06</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">29.75</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">96.61</td>
+						</tr>
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;">+Expansion</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">99.32</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">18.88</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">99.13</td>
+						</tr>
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>REAR (Full)</strong></td>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>98.50</strong></td>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>29.61</strong></td>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>97.68</strong></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<h3>Comparison with LLM-Based Methods</h3>
+			<p style="text-align: justify;">REAR achieves competitive performance with state-of-the-art LLM-based retrieval systems while using 92% fewer tokens:</p>
+			<div style="overflow-x:auto;">
+				<table style="margin-left:auto; margin-right:auto; border-collapse: collapse;">
+					<thead>
+						<tr>
+							<th style="border: 1px solid #ddd; padding: 8px;">Method</th>
+							<th style="border: 1px solid #ddd; padding: 8px;">BIRD<br>Full Recall</th>
+							<th style="border: 1px solid #ddd; padding: 8px;">BIRD<br>SQL Acc (Gemini)</th>
+							<th style="border: 1px solid #ddd; padding: 8px;">Tokens</th>
+						</tr>
+					</thead>
+					<tbody align="center">
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;">ARM</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">92.7</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">30.4</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">19,748</td>
+						</tr>
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;">JAR</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">77.9</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">29.1</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">2,222</td>
+						</tr>
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;">MURRE</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">80.1</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">—</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">17,655</td>
+						</tr>
+						<tr style="background-color: #f0f8ff;">
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>REAR</strong></td>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>87.3</strong></td>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>34.0</strong></td>
+							<td style="border: 1px solid #ddd; padding: 8px;"><strong>1,534</strong></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<h3>SQL Execution Accuracy</h3>
+			<p style="text-align: justify;">Improvements in retrieval quality directly translate to better downstream SQL generation across multiple LLMs:</p>
+			<ul>
+				<li><strong>BIRD:</strong> 37.87% → 43.09% (+5.22 points) with Gemini 2.0 Flash</li>
+				<li><strong>Spider:</strong> 69.44% → 69.93% with Gemini 2.0 Flash</li>
+				<li><strong>MMQA:</strong> 26.73% → 38.87% (+12.14 points) with Gemini 2.0 Flash</li>
+			</ul>
+
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dataset Statistics</h2>
+			<div style="overflow-x:auto;">
+				<table style="margin-left:auto; margin-right:auto; border-collapse: collapse;">
+					<thead>
+						<tr>
+							<th style="border: 1px solid #ddd; padding: 8px;">Dataset</th>
+							<th style="border: 1px solid #ddd; padding: 8px;">Total Databases</th>
+							<th style="border: 1px solid #ddd; padding: 8px;">Total Tables</th>
+							<th style="border: 1px solid #ddd; padding: 8px;">Total Queries</th>
+							<th style="border: 1px solid #ddd; padding: 8px;">Avg. Tables/Query</th>
+						</tr>
+					</thead>
+					<tbody align="center">
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;">BIRD</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">11</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">75</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">1,534</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">1.96</td>
+						</tr>
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;">Spider</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">20</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">139</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">1,034</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">1.91</td>
+						</tr>
+						<tr>
+							<td style="border: 1px solid #ddd; padding: 8px;">MMQA</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">—</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">695</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">3,312</td>
+							<td style="border: 1px solid #ddd; padding: 8px;">2.22</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Citation</h2>
+			<p style="text-align: justify;">If you use REAR in your research, please cite:</p>
+			<pre><code>@misc{agarwal2025rearretrieveexpandrefine,
+      title={REaR: Retrieve, Expand and Refine for Effective Multitable Retrieval}, 
+      author={Rishita Agarwal and Himanshu Singhal and Peter Baile Chen and Manan Roy Choudhury and Dan Roth and Vivek Gupta},
+      year={2025},
+      eprint={2511.00805},
+      archivePrefix={arXiv},
+      primaryClass={cs.IR},
+      url={https://arxiv.org/abs/2511.00805}, 
+}</code></pre>
+
+			<h2><a id="user-content-header-2" class="anchor" href="#header-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acknowledgements</h2>
+			<p style="text-align: justify;">This work evaluates on the BIRD, Spider, and MMQA datasets. We thank the creators of these benchmarks for making their data publicly available. We also acknowledge the use of various open-source retrieval models and embedding models in our experiments.</p>
+
+			<footer class="site-footer">
+				<span class="site-footer-owner"><a href="https://rear.github.io"></a>REaR</a> is maintained by <a href="https://himanshu-skid19.github.io">Himanshu Singhal</span>
+				<span class="site-footer-credits">This page template is based on the <a href="https://github.com/jasonlong/cayman-theme">Cayman</a> theme.</span>
+			</footer>
+		</section>
+	</body>
+</html>
