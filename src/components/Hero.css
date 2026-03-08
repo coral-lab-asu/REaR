@@ -229,239 +229,21 @@
 
 .visual-container {
   width: 100%;
-  max-width: 500px;
+  max-width: 550px;
 }
 
-/* REAR Pipeline visual — same structure as Weaver pipeline */
-.weaver-pipeline {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 2.5rem;
-  background: var(--card-bg);
+.architecture-image {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
-  border-radius: 1.5rem;
-  box-shadow: var(--shadow-md);
-  align-items: center;
-  min-width: 300px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.pipeline-stage {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-/* Input Stage */
-.input-box {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.25rem 2rem;
-  background: linear-gradient(135deg, var(--blue-accent), var(--cyan-accent));
-  border-radius: 1rem;
-  position: relative;
-  overflow: hidden;
-  transition: all var(--transition-normal);
-  box-shadow: var(--shadow-md);
-  width: 100%;
-  justify-content: center;
-}
-
-.input-box:hover {
-  transform: translateY(-2px) scale(1.02);
+.architecture-image:hover {
+  transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
-}
-
-.input-box::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  animation: inputShine 3s ease-in-out infinite;
-}
-
-.input-label {
-  font-size: 1rem;
-  font-weight: 700;
-  color: white;
-  padding: 0.6rem 1.25rem;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.6rem;
-  backdrop-filter: blur(10px);
-  position: relative;
-  z-index: 2;
-  transition: all var(--transition-normal);
-}
-
-.input-label:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
-}
-
-.input-connector {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
-  position: relative;
-  z-index: 2;
-}
-
-/* Stage boxes */
-.stage-box {
-  padding: 1.25rem 1.5rem;
-  border-radius: 1rem;
-  text-align: center;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  transition: all var(--transition-normal);
-  box-shadow: var(--shadow-sm);
-}
-
-.stage-box:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.retrieve-box {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(37, 99, 235, 0.03));
-  border: 2px solid var(--blue-accent);
-}
-
-.expand-box {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(124, 58, 237, 0.03));
-  border: 2px solid var(--purple-accent);
-}
-
-.refine-box {
-  background: linear-gradient(135deg, rgba(5, 150, 105, 0.08), rgba(5, 150, 105, 0.03));
-  border: 2px solid var(--green-accent);
-}
-
-.stage-title {
-  font-size: 1.25rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-}
-
-.retrieve-box .stage-title {
-  background: linear-gradient(135deg, var(--blue-accent), var(--cyan-accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.expand-box .stage-title {
-  background: linear-gradient(135deg, var(--purple-accent), var(--blue-accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.refine-box .stage-title {
-  background: linear-gradient(135deg, var(--green-accent), var(--cyan-accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.stage-tags {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-  margin: 0.5rem 0;
-  flex-wrap: wrap;
-}
-
-.stage-tag {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.2rem 0.6rem;
-  border-radius: 1rem;
-}
-
-.retrieve-box .stage-tag {
-  background: rgba(37, 99, 235, 0.1);
-  color: var(--blue-accent);
-  border: 1px solid rgba(37, 99, 235, 0.3);
-}
-
-.expand-box .stage-tag {
-  background: rgba(124, 58, 237, 0.1);
-  color: var(--purple-accent);
-  border: 1px solid rgba(124, 58, 237, 0.3);
-}
-
-.refine-box .stage-tag {
-  background: rgba(5, 150, 105, 0.1);
-  color: var(--green-accent);
-  border: 1px solid rgba(5, 150, 105, 0.3);
-}
-
-.stage-subtitle {
-  font-size: 0.8rem;
-  color: var(--secondary-text);
-  font-weight: 500;
-  margin-top: 0.25rem;
-}
-
-/* Output Stage */
-.output-box {
-  padding: 1rem 2rem;
-  background: linear-gradient(135deg, var(--success-text), var(--cyan-accent));
-  border-radius: 1rem;
-  position: relative;
-  overflow: hidden;
-  transition: all var(--transition-normal);
-  width: 100%;
-  text-align: center;
-}
-
-.output-box:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: var(--shadow-lg);
-}
-
-.output-label {
-  font-size: 1rem;
-  font-weight: 700;
-  color: white;
-  position: relative;
-  z-index: 2;
-}
-
-.output-shine {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  animation: shine 2s ease-in-out infinite;
-}
-
-.flow-arrow {
-  font-size: 1.5rem;
-  color: var(--accent-text);
-  font-weight: bold;
-}
-
-@keyframes shine {
-  0% { left: -100%; }
-  50% { left: 100%; }
-  100% { left: 100%; }
-}
-
-@keyframes inputShine {
-  0% { left: -100%; }
-  50% { left: 100%; }
-  100% { left: 100%; }
 }
 
 /* Responsive Design */
@@ -476,9 +258,8 @@
     order: -1;
   }
 
-  .weaver-pipeline {
-    padding: 1.5rem;
-    min-width: 280px;
+  .visual-container {
+    max-width: 450px;
   }
 }
 
@@ -513,7 +294,7 @@
     justify-content: center;
   }
 
-  .flow-arrow {
-    font-size: 1.25rem;
+  .architecture-image {
+    border-radius: 0.75rem;
   }
 }

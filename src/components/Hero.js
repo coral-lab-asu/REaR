@@ -109,7 +109,7 @@ const Hero = () => {
           </motion.div>
         </motion.div>
 
-        {/* Right-side pipeline visual */}
+        {/* Right-side architecture diagram */}
         <motion.div
           className="hero-visual"
           variants={itemVariants}
@@ -117,71 +117,11 @@ const Hero = () => {
           animate="visible"
         >
           <div className="visual-container">
-            <div className="weaver-pipeline">
-
-              {/* Input */}
-              <div className="pipeline-stage input-stage">
-                <div className="input-box">
-                  <div className="input-label">Query</div>
-                  <div className="input-connector">+</div>
-                  <div className="input-label">Table Corpus</div>
-                </div>
-              </div>
-
-              <div className="flow-arrow">↓</div>
-
-              {/* Stage 1 — Retrieve */}
-              <div className="pipeline-stage">
-                <div className="stage-box retrieve-box">
-                  <div className="stage-title">Retrieve</div>
-                  <div className="stage-tags">
-                    <span className="stage-tag">Dense</span>
-                    <span className="stage-tag">Sparse</span>
-                    <span className="stage-tag">Hybrid</span>
-                  </div>
-                  <div className="stage-subtitle">Query-aligned table selection</div>
-                </div>
-              </div>
-
-              <div className="flow-arrow">↓</div>
-
-              {/* Stage 2 — Expand */}
-              <div className="pipeline-stage">
-                <div className="stage-box expand-box">
-                  <div className="stage-title">Expand</div>
-                  <div className="stage-tags">
-                    <span className="stage-tag">FAISS Search</span>
-                    <span className="stage-tag">Cross-encoder</span>
-                  </div>
-                  <div className="stage-subtitle">Joinable table discovery</div>
-                </div>
-              </div>
-
-              <div className="flow-arrow">↓</div>
-
-              {/* Stage 3 — Refine */}
-              <div className="pipeline-stage">
-                <div className="stage-box refine-box">
-                  <div className="stage-title">Refine</div>
-                  <div className="stage-tags">
-                    <span className="stage-tag">Relevance</span>
-                    <span className="stage-tag">Joinability</span>
-                  </div>
-                  <div className="stage-subtitle">Joint scoring &amp; reranking</div>
-                </div>
-              </div>
-
-              <div className="flow-arrow">↓</div>
-
-              {/* Output */}
-              <div className="pipeline-stage output-stage">
-                <div className="output-box">
-                  <div className="output-label">Final Table Set</div>
-                  <div className="output-shine"></div>
-                </div>
-              </div>
-
-            </div>
+            <img
+              src={`${process.env.PUBLIC_URL}/rear_architecture.png`}
+              alt="REaR Architecture Pipeline"
+              className="architecture-image"
+            />
           </div>
         </motion.div>
       </div>
