@@ -37,7 +37,7 @@ const Hero = () => {
         >
           <motion.div className="hero-badge" variants={itemVariants}>
             <FiAward className="badge-icon" />
-            <span>arXiv 2025</span>
+            <span>ACL Main 2026</span>
           </motion.div>
 
           <motion.h1 className="hero-title" variants={itemVariants}>
